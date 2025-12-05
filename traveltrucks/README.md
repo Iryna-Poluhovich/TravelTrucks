@@ -68,3 +68,108 @@ The app is powered by **Next.js + TypeScript** and uses a scalable and maintaina
 ├── types/              # Shared TypeScript types
 ├── public/             # Static assets
 ```
+### **📡 API Characteristics:**
+
+- Session Authorization
+- Entity-based API services (goods, users, orders, reviews)
+- Data caching via React Query
+- Error handling and request abstraction layer
+- Axios instance with interceptors
+
+---
+
+## 🚀 **Getting Started**
+
+### **1️⃣ Install dependencies**
+
+```bash
+npm install
+```
+
+or
+
+```bash
+bun install
+```
+
+---
+
+### **2️⃣ Start development server**
+
+```bash
+npm run dev
+```
+
+---
+
+### **3️⃣ Build for production**
+
+```bash
+npm run build
+npm run start
+```
+
+---
+
+## 🧪 **Roadmap**
+
+- [ ] Recommendation engine (AI-based)
+- [ ] Admin dashboard for product management
+- [ ] Payment integration (Stripe)
+- [ ] i18n internationalization support
+- [ ] Unit + E2E testing (Jest / Cypress)
+
+---
+
+### **📡 API Characteristics:**
+
+- Session Authorization
+- Entity-based API services (goods, users, orders, reviews)
+- Data caching via React Query
+- Error handling and request abstraction layer
+- Axios instance with interceptors
+
+---
+
+## 🚀 **Getting Started**
+
+### **1️⃣ Install dependencies**
+
+```bash
+npm install
+```
+
+or
+
+```bash
+bun install
+```
+
+---
+
+### **2️⃣ Start development server**
+
+```bash
+npm run dev
+```
+
+---
+
+### **3️⃣ Build for production**
+
+```bash
+npm run build
+npm run start
+```
+
+---
+
+## 🧪 **Roadmap**
+
+- [ ] Recommendation engine (AI-based)
+- [ ] Admin dashboard for product management
+- [ ] Payment integration (Stripe)
+- [ ] i18n internationalization support
+- [ ] Unit + E2E testing (Jest / Cypress)
+
+---

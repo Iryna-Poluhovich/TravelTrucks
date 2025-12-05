@@ -1,0 +1,26 @@
+export type Camper = {
+  id: string;
+  name: string;
+  location?: string;
+  price: number; 
+  photos?: string[];
+  description?: string;
+  transmission?: string;
+  engine?: string;
+  AC?: boolean;
+  bathroom?: boolean;
+  kitchen?: boolean;
+  TV?: boolean;
+  radio?: boolean;
+  refrigerator?: boolean;
+  microwave?: boolean;
+  gas?: boolean;
+  water?: boolean;
+  form?: string;
+  length?: number;
+  width?: number;
+  height?: number;
+  tank?: number;
+  consumption?: number;
+  reviews?: Array<{ id: string; name: string; rating: number; text?: string; date?: string }>;
+};
