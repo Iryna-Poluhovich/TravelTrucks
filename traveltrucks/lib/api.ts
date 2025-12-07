@@ -1,5 +1,8 @@
 import axios from "axios";
 
+/* ----------------------------- */
+/* Camper interface              */
+/* ----------------------------- */
 export interface Camper {
   id: string;
   name: string;
@@ -11,7 +14,6 @@ export interface Camper {
   engine: string;
   transmission: string;
 
-  // features (booleans in backend)
   AC?: boolean;
   kitchen?: boolean;
   bathroom?: boolean;
@@ -22,7 +24,6 @@ export interface Camper {
   gas?: boolean;
   water?: boolean;
 
-  // details
   form?: string;
   length?: string;
   width?: string;
@@ -30,50 +31,88 @@ export interface Camper {
   tank?: string;
   consumption?: string;
 
-  // reviews optional (mock)
-  reviews?: { id: string; name: string; rating: number; text: string }[];
+  reviews?: {
+    id: string;
+    name: string;
+    rating: number;
+    text: string;
+  }[];
 }
 
+/* ----------------------------- */
+/* Base URL configuration        */
+/* ----------------------------- */
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io";
+  process.env.NODE_ENV === "development"
+    ? process.env.NEXT_PUBLIC_LOCAL_URL // localhost:3000
+    : process.env.NEXT_PUBLIC_API_URL; // MockAPI
 
+if (!BASE_URL) {
+  throw new Error(
+    "❌ BASE_URL is missing. Please check your .env.local or environment variables"
+  );
+}
+
+/* ----------------------------- */
+/* Query params interface        */
+/* ----------------------------- */
 export interface CamperParams {
   page?: number;
   limit?: number;
   location?: string;
   bodyType?: string;
-  // features intentionally omitted because we'll filter locally
-  features?: string[];
+  features?: string[]; // local filtering
 }
 
-export async function fetchCampers(
-  params?: CamperParams
-): Promise<Camper[]> {
+/* ---------------------------------- */
+/* Fetch campers with pagination      */
+/* ---------------------------------- */
+export async function fetchCampers(params?: CamperParams): Promise<Camper[]> {
   try {
     const query: Record<string, string | number> = {};
-    if (params) {
-      if (params.page) query.page = params.page;
-      if (params.limit) query.limit = params.limit;
-      if (params.location) query.location = params.location;
-      if (params.bodyType) query.bodyType = params.bodyType;
-      // do not convert features here — local filter will handle it
+
+    if (params?.page) query.page = params.page;
+    if (params?.limit) query.limit = params.limit;
+    if (params?.location) query.location = params.location;
+    if (params?.bodyType) query.bodyType = params.bodyType;
+
+    const endpoint = `${BASE_URL}/campers`;
+
+    const { data } = await axios.get(endpoint, { params: query });
+
+    if (!Array.isArray(data)) {
+      console.warn(`⚠️ Expected array from ${endpoint}, got:`, data);
+      return [];
     }
 
-    const { data } = await axios.get(`${BASE_URL}/campers`, { params: query });
-    return Array.isArray(data) ? data : [];
-  } catch (err) {
+    return data;
+  } catch (err: unknown) {
+  if (err instanceof Error) {
+    console.error("fetchCampers error:", err.message);
+  } else {
     console.error("fetchCampers error:", err);
-    return [];
   }
+  return [];
+}
 }
 
+/* ---------------------------------- */
+/* Fetch single camper by ID          */
+/* ---------------------------------- */
 export async function fetchCamperById(id: string): Promise<Camper | null> {
   try {
-    const { data } = await axios.get(`${BASE_URL}/campers/${id}`);
-    return data ?? null;
-  } catch (err) {
+    if (!id) return null;
+    const endpoint = `${BASE_URL}/campers/${id}`;
+    const { data } = await axios.get(endpoint);
+
+    if (!data) return null;
+    return data;
+  } catch (err: unknown) {
+  if (err instanceof Error) {
+    console.error("fetchCamperById error:", err.message);
+  } else {
     console.error("fetchCamperById error:", err);
-    return null;
   }
+  return null;
+}
 }

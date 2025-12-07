@@ -9,12 +9,12 @@ import css from "./Catalog.module.css";
 
 export default function CatalogPage() {
   const filters = useStore((s) => s.filters);
-  const setCampers = useStore((s) => s.setCampers);
+  const loadCampers = useStore((s) => s.loadCampers);
 
   // Завантаження перших кемперів при першому рендері або зміні фільтрів
   useEffect(() => {
-    setCampers([], true); // очищаємо старі результати
-  }, [filters, setCampers]);
+    loadCampers(); // тепер викликаємо правильну функцію
+  }, [filters, loadCampers]);
 
   return (
     <>

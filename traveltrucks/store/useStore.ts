@@ -1,31 +1,32 @@
-'use client';
+"use client";
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Camper } from "@/lib/api";
+import { Camper, fetchCampers } from "@/lib/api";
 
 export interface Filters {
   location: string;
   bodyType: string;
-  features: string[]; // local filtering
+  features: string[];
 }
 
 export interface StoreState {
   // filters
   filters: Filters;
-  setFilters: (filters: Filters) => void;
-  resetFilters: () => void;
+  setFilters: (filters: Filters) => Promise<void>;
+  resetFilters: () => Promise<void>;
 
   // favorites
   favorites: string[];
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
 
-  // campers list
-  campers: Camper[]; // already filtered as shown
-  setCampers: (campers: Camper[], reset?: boolean) => void;
+  // campers
+  campers: Camper[];
+  loadCampers: () => Promise<void>;
+  appendCampers: () => Promise<void>;
 
-  // pagination and loading
+  // pagination & loading
   page: number;
   setPage: (page: number) => void;
   limit: number;
@@ -36,45 +37,113 @@ export interface StoreState {
 export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
-      // filters
-      filters: { location: "", bodyType: "", features: [] },
-      setFilters: (filters) => set({ filters }),
-      resetFilters: () =>
-        set({ filters: { location: "", bodyType: "", features: [] }, page: 1 }),
+      /* ---------------------- */
+      /* FILTERS                */
+      /* ---------------------- */
 
-      // favorites
+      filters: { location: "", bodyType: "", features: [] },
+
+      setFilters: async (filters) => {
+        set({ filters, page: 1 });        // reset page
+        await get().loadCampers();        // reload from page=1
+      },
+
+      resetFilters: async () => {
+        set({ filters: { location: "", bodyType: "", features: [] }, page: 1 });
+        await get().loadCampers();
+      },
+
+      /* ---------------------- */
+      /* FAVORITES              */
+      /* ---------------------- */
+
       favorites: [],
       toggleFavorite: (id: string) => {
         const fav = get().favorites;
         set({
-          favorites: fav.includes(id) ? fav.filter((f) => f !== id) : [...fav, id],
+          favorites: fav.includes(id)
+            ? fav.filter((f) => f !== id)
+            : [...fav, id],
         });
       },
+
       isFavorite: (id: string) => get().favorites.includes(id),
 
-      // campers
+      /* ---------------------- */
+      /* CAMPERS                */
+      /* ---------------------- */
+
       campers: [],
-      setCampers: (campers: Camper[], reset = false) => {
-        if (reset) {
-          set({ campers });
-        } else {
-          set({ campers: [...get().campers, ...campers] });
-        }
+
+      // 🔥 Load initial campers (reset list)
+      loadCampers: async () => {
+        const { page, limit, filters } = get();
+        set({ loading: true });
+
+        const data = await fetchCampers({
+          page,
+          limit,
+          location: filters.location || undefined,
+          bodyType: filters.bodyType || undefined,
+        });
+
+        const filtered =
+          filters.features.length > 0
+            ? data.filter((c) =>
+                filters.features.every((f) => c[f as keyof Camper])
+              )
+            : data;
+
+        set({ campers: filtered, loading: false });
       },
 
-      // pagination & loading
+      // 🔥 Load next page (append)
+      appendCampers: async () => {
+        const { page, limit, filters } = get();
+        set({ loading: true });
+
+        const data = await fetchCampers({
+          page,
+          limit,
+          location: filters.location || undefined,
+          bodyType: filters.bodyType || undefined,
+        });
+
+        const filtered =
+          filters.features.length > 0
+            ? data.filter((c) =>
+                filters.features.every((f) => c[f as keyof Camper])
+              )
+            : data;
+
+        set({
+          campers: [...get().campers, ...filtered],
+          loading: false,
+        });
+      },
+
+      /* ---------------------- */
+      /* PAGINATION             */
+      /* ---------------------- */
+
       page: 1,
-      setPage: (page: number) => set({ page }),
+      setPage: (page) => set({ page }),
+
       limit: 8,
+
+      /* ---------------------- */
+      /* LOADING                */
+      /* ---------------------- */
+
       loading: false,
-      setLoading: (loading: boolean) => set({ loading }),
+      setLoading: (loading) => set({ loading }),
     }),
+
     {
       name: "traveltrucks-store",
       partialize: (state) => ({
         favorites: state.favorites,
         filters: state.filters,
-        campers: state.campers,
         page: state.page,
       }),
     }
