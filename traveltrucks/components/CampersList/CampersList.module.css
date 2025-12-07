@@ -1,42 +1,27 @@
-.container {
-display: flex;
-flex-direction: column;
-gap: 2rem;
-padding: 2rem;
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
-
-
-.grid {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-gap: 1.5rem;
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
 }
-
-
-.loadMoreWrapper {
-display: flex;
-justify-content: center;
+.loadMoreWrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
 }
-
-
-.loadMoreButton {
-padding: 0.75rem 1.5rem;
-border-radius: 12px;
-background-color: #000;
-color: #fff;
-font-weight: 600;
-cursor: pointer;
-transition: background-color 0.3s ease;
-border: none;
+.loadMoreBtn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #0070f3;
+  color: #fff;
+  cursor: pointer;
 }
-
-
-.loadMoreButton:hover {
-background-color: #333;
-}
-
-
-.loadMoreButton:disabled {
-opacity: 0.5;
-cursor: not-allowed;
+.loadMoreBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

@@ -1,0 +1,121 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.label {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #6c717b;
+}
+
+.location {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-radius: 12px;
+  padding-block: 18px;
+  /* padding-inline: 20px 218px; */
+  max-width: 360px;
+  height: 56px;
+  background: #f7f7f7;
+}
+
+.icon {
+  position: absolute;
+  left: 20px;
+  pointer-events: none;
+  fill: #101828;
+}
+
+.input {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #101828;
+  width: 100%;
+  padding: 16px 48px;
+}
+
+.title {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #475467;
+  margin-top: 40px;
+  margin-bottom: 32px;
+}
+
+.textlabel {
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #101828;
+  padding-bottom: 24px;
+}
+
+.divider {
+  stroke-width: 1px;
+  stroke: #dadde1;
+  padding-bottom: 24px;
+}
+.optionBtn {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* відстань між SVG і текстом */
+}
+
+.featureIcon {
+  width: 32px;
+  height: 32px;
+  fill: #101828;
+}
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.optionBtn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+}
+
+.optionBtn:hover {
+  transform: translateY(-1px);
+}
+
+.active {
+  background: #e44848;
+  color: white;
+  border-color: #e44848;
+}
+
+.actions {
+  margin-top: 12px;
+}
+
+.resetBtn {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}

@@ -1,80 +1,83 @@
 'use client';
 
-
-import { useEffect } from 'react';
-import { useStore } from '@/store/useStore';
-import { fetchCampers } from '@/lib/api';
-import CamperCard from '../CamperCard/CamperCard';
-import css from './CampersList.module.css';
-
+import { useEffect, useCallback } from "react";
+import { useStore } from "@/store/useStore";
+import { fetchCampers, Camper, CamperParams } from "@/lib/api";
+import CamperCard from "../CamperCard/CamperCard";
+import css from "./CampersList.module.css";
 
 export default function CampersList() {
-const campers = useStore((s) => s.campers);
-const page = useStore((s) => s.page);
-const limit = useStore((s) => s.limit);
-const filters = useStore((s) => s.filters);
-const setCampers = useStore((s) => s.setCampers);
-const appendCampers = useStore((s) => s.appendCampers);
-const setPage = useStore((s) => s.setPage);
-const loading = useStore((s) => s.loading);
-const setLoading = useStore((s) => s.setLoading);
+  const campers = useStore((s) => s.campers);
+  const page = useStore((s) => s.page);
+  const limit = useStore((s) => s.limit);
+  const filters = useStore((s) => s.filters);
+  const loading = useStore((s) => s.loading);
 
+  const setCampers = useStore((s) => s.setCampers);
+  const setPage = useStore((s) => s.setPage);
+  const setLoading = useStore((s) => s.setLoading);
 
-useEffect(() => {
-const load = async () => {
-setLoading(true);
-try {
-const params: any = { page: 1, limit };
-if (filters.location) params.location = filters.location;
-if (filters.bodyType) params.bodyType = filters.bodyType;
-filters.features.forEach((f, i) => (params[`features[${i}]`] = f));
+  const applyLocalFeatures = (items: Camper[], features: string[]) => {
+  if (!features || features.length === 0) return items;
 
+  return items.filter((c) =>
+    features.every((f) => {
+      const key = f as keyof Camper;
 
-const data = await fetchCampers(params);
-setCampers(data, true);
-setPage(1);
-} finally {
-setLoading(false);
-}
+      // Camper features are boolean | undefined
+      const value = c[key];
+
+      return value === true; // must be exactly true
+    })
+  );
 };
 
+  const loadCampers = useCallback(
+    async (pageNum = 1, reset = false) => {
+      setLoading(true);
+      try {
+        // backend params (no features)
+        const params: CamperParams = { page: pageNum, limit, location: filters.location || undefined, bodyType: filters.bodyType || undefined };
+        const data = await fetchCampers(params);
+        // apply local features filter
+        const filtered = applyLocalFeatures(data, filters.features);
+        setCampers(filtered, reset);
+        setPage(pageNum);
+      } catch (err) {
+        console.error(err);
+        setCampers([], reset);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [filters.location, filters.bodyType, filters.features, limit, setCampers, setPage, setLoading]
+  );
 
-load();
-}, [filters]);
+  useEffect(() => {
+    // when filters change, load page 1 and reset
+    loadCampers(1, true);
+  }, [loadCampers]);
 
+  const loadMore = async () => {
+    if (loading) return;
+    await loadCampers(page + 1, false);
+  };
 
-const loadMore = async () => {
-if (loading) return;
-setLoading(true);
-try {
-const next = page + 1;
-const params: any = { page: next, limit };
-if (filters.location) params.location = filters.location;
-if (filters.bodyType) params.bodyType = filters.bodyType;
-filters.features.forEach((f, i) => (params[`features[${i}]`] = f));
+  return (
+    <section className={css.listWrapper}>
+      {(!Array.isArray(campers) || campers.length === 0) && !loading && <p>No campers found.</p>}
 
+      <div className={css.list}>
+        {Array.isArray(campers) && campers.map((c) => <CamperCard key={c.id} camper={c} />)}
+      </div>
 
-const data = await fetchCampers(params);
-appendCampers(data);
-setPage(next);
-} finally {
-setLoading(false);
-}
-};
-
-
-return (
-<div className={css.container}>
-<div className={css.grid}>
-{campers.map((c) => (
-<CamperCard key={c.id} camper={c} />
-))}
-</div>
-<div className={css.loadMoreWrapper}>
-<button onClick={loadMore} disabled={loading} className={css.loadMoreButton}>
-{loading ? 'Loading...' : 'Load More'}
-</button>
-</div>
-</div>
-);
+      {Array.isArray(campers) && campers.length > 0 && (
+        <div className={css.loadMoreWrap}>
+          <button className={css.loadMoreBtn} onClick={loadMore} disabled={loading}>
+            {loading ? "Loading..." : "Load More"}
+          </button>
+        </div>
+      )}
+    </section>
+  );
 }

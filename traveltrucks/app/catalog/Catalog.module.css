@@ -1,0 +1,53 @@
+/* Контейнер з двома колонками */
+.container {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 32px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Лівий sticky-фільтр */
+.filters {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 24px;
+  height: fit-content;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 100px; /* відступ від верху вікна */
+}
+
+/* Правий список кемперів */
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Порожній стан */
+.emptyState {
+  text-align: center;
+  color: #6c727f;
+  font-size: 18px;
+  margin-top: 40px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .filters {
+    order: 2;
+    position: relative; /* перестає бути sticky на мобільних */
+    top: auto;
+  }
+
+  .listWrapper {
+    order: 1;
+  }
+}
