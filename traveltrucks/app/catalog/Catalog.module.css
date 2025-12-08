@@ -11,11 +11,11 @@
 /* Лівий sticky-фільтр */
 .filters {
   background: #ffffff;
-  border: 1px solid #e0e0e0;
+  /* border: 1px solid #e0e0e0; */
   border-radius: 16px;
-  padding: 24px;
+  /* padding: 24px; */
   height: fit-content;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+  /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04); */
   position: sticky;
   top: 100px; /* відступ від верху вікна */
 }
@@ -24,7 +24,14 @@
 .listWrapper {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
+  padding-left: 64px;
+  border: 1px solid #dadde1;
+border-radius: 20px;
+padding: 24px;
+max-width: 888px;
+height: 368px;
+background: #fff;
 }
 
 /* Порожній стан */

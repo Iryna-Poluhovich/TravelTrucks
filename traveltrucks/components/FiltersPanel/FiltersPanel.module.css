@@ -25,10 +25,11 @@
   gap: 8px;
   align-items: center;
   border-radius: 12px;
-  padding-block: 18px;
-  /* padding-inline: 20px 218px; */
-  max-width: 360px;
-  height: 56px;
+padding-block: 18px;
+/* padding-inline: 20px 218px; */
+max-width: 360px;
+height: 56px;
+border: none;
   background: #f7f7f7;
 }
 
@@ -69,13 +70,28 @@
 }
 
 .divider {
-  stroke-width: 1px;
-  stroke: #dadde1;
-  padding-bottom: 24px;
-}
+  stroke: black;
+  fill: none;
+  }
+
 .optionBtn {
   display: flex;
+  flex-direction: column;
   align-items: center;
+  border: 1px solid #dadde1;
+border-radius: 12px;
+padding-block: 16px;
+padding-inline: 27px;
+max-width: 112px;
+height: 96px;
+  font-family: "Inter", sans-serif;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+letter-spacing: -0.01em;
+text-align: center;
+color: #101828;
+flex: 0 1 calc(360px - 24px) / 3;
   gap: 8px; /* відстань між SVG і текстом */
 }
 
@@ -87,7 +103,8 @@
 .options {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
+  padding-top: 24px;
 }
 
 .optionBtn {
@@ -109,13 +126,26 @@
 }
 
 .actions {
-  margin-top: 12px;
+  margin-top: 40px;
 }
 
 .resetBtn {
-  background: transparent;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  border-radius: 8px;
+ border-radius: 200px;
+padding-block: 16px;
+padding-inline: 60px;
+border: none;
+width: 166px;
+height: 56px;
   cursor: pointer;
+  background: #e44848;
+  font-family: "Inter", sans-serif;
+font-weight: 500;
+font-size: 16px;
+line-height: 1.5;
+letter-spacing: -0.01em;
+color: #fff;
+}
+
+.resetBtn:hover{
+  background: #d84343;
 }

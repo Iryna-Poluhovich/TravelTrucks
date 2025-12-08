@@ -73,6 +73,9 @@ export default function FiltersPanel() {
       {/* Features */}
       <div className={css.block}>
         <p className={css.textlabel}>Vehicle equipment</p>
+        <svg className={css.divider} width={360} height={1} aria-hidden="true">
+          <use href="/icons.svg#divider" />
+        </svg>
         <div className={css.options}>
           {FEATURES.map((f) => (
             <button
@@ -94,7 +97,7 @@ export default function FiltersPanel() {
       <div className={css.block}>
         <p className={css.textlabel}>Vehicle type</p>
         <svg className={css.divider} width={360} height={1} aria-hidden="true">
-          <use href="/icons.svg#icon-divider" />
+          <use href="/icons.svg#divider" />
         </svg>
         <div className={css.options}>
           {BODY_TYPES.map((t) => (
@@ -116,9 +119,9 @@ export default function FiltersPanel() {
       {/* Reset */}
       <div className={css.actions}>
         <button className={css.resetBtn} onClick={clear}>
-          Reset
+         Search
         </button>
       </div>
     </aside>
   );
-}
+} 
