@@ -27,11 +27,11 @@
   gap: 32px;
   padding-left: 64px;
   border: 1px solid #dadde1;
-border-radius: 20px;
-padding: 24px;
-max-width: 888px;
-height: 368px;
-background: #fff;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 888px;
+  height: 368px;
+  background: #fff;
 }
 
 /* Порожній стан */
