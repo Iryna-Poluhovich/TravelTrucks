@@ -40,18 +40,20 @@ export interface Camper {
 }
 
 /* ----------------------------- */
-/* Base URL configuration        */
+/* 🔥 ALWAYS MockAPI fallback    */
 /* ----------------------------- */
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? process.env.NEXT_PUBLIC_LOCAL_URL // localhost:3000
-    : process.env.NEXT_PUBLIC_API_URL; // MockAPI
+const MOCK_API = "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io";
 
-if (!BASE_URL) {
-  throw new Error(
-    "❌ BASE_URL is missing. Please check your .env.local or environment variables"
-  );
-}
+/**
+ * NEXT_PUBLIC_API_URL is optional now.
+ * If it’s missing → automatically fallback to MOCK_API.
+ */
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.trim() ||
+  process.env.NEXT_PUBLIC_BASE_API_URL?.trim() ||
+  MOCK_API;
+
+console.log("🔗 API BASE_URL:", BASE_URL);
 
 /* ----------------------------- */
 /* Query params interface        */
@@ -61,58 +63,60 @@ export interface CamperParams {
   limit?: number;
   location?: string;
   bodyType?: string;
-  features?: string[]; // local filtering
+  features?: string[];
+}
+
+/* ------------------------------------------------ */
+/* Helper: safe GET that never throws 404           */
+/* ------------------------------------------------ */
+async function safeGet<T>(url: string, params?: Record<string, unknown>): Promise<T | null> {
+  try {
+    const response = await axios.get<T>(url, { params });
+    return response.data ?? null;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.warn(`⚠️ API request failed: ${url}`);
+      console.warn("Reason:", error.response?.status, error.message);
+    } else {
+      console.warn("⚠️ Unknown error:", error);
+    }
+    return null;
+  }
 }
 
 /* ---------------------------------- */
 /* Fetch campers with pagination      */
 /* ---------------------------------- */
 export async function fetchCampers(params?: CamperParams): Promise<Camper[]> {
-  try {
-    const query: Record<string, string | number> = {};
+  const endpoint = `${BASE_URL}/campers`;
 
-    if (params?.page) query.page = params.page;
-    if (params?.limit) query.limit = params.limit;
-    if (params?.location) query.location = params.location;
-    if (params?.bodyType) query.bodyType = params.bodyType;
+  const query: Record<string, string | number> = {};
 
-    const endpoint = `${BASE_URL}/campers`;
+  if (params?.page) query.page = params.page;
+  if (params?.limit) query.limit = params.limit;
+  if (params?.location) query.location = params.location;
+  if (params?.bodyType) query.bodyType = params.bodyType;
 
-    const { data } = await axios.get(endpoint, { params: query });
+  const data = await safeGet<Camper[]>(endpoint, query);
 
-    if (!Array.isArray(data)) {
-      console.warn(`⚠️ Expected array from ${endpoint}, got:`, data);
-      return [];
-    }
-
-    return data;
-  } catch (err: unknown) {
-  if (err instanceof Error) {
-    console.error("fetchCampers error:", err.message);
-  } else {
-    console.error("fetchCampers error:", err);
+  if (!data) return [];
+  if (!Array.isArray(data)) {
+    console.warn(`⚠️ Expected array from ${endpoint}, got:`, data);
+    return [];
   }
-  return [];
-}
+
+  return data;
 }
 
 /* ---------------------------------- */
 /* Fetch single camper by ID          */
 /* ---------------------------------- */
 export async function fetchCamperById(id: string): Promise<Camper | null> {
-  try {
-    if (!id) return null;
-    const endpoint = `${BASE_URL}/campers/${id}`;
-    const { data } = await axios.get(endpoint);
+  if (!id) return null;
 
-    if (!data) return null;
-    return data;
-  } catch (err: unknown) {
-  if (err instanceof Error) {
-    console.error("fetchCamperById error:", err.message);
-  } else {
-    console.error("fetchCamperById error:", err);
-  }
-  return null;
-}
+  const endpoint = `${BASE_URL}/campers/${id}`;
+
+  const data = await safeGet<Camper>(endpoint);
+
+  return data ?? null;
 }
